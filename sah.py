@@ -19,7 +19,6 @@ def main(*args):
     figure.append(Figura([1, 1], "p", "crna"))
     figure.append(Figura([1, 2], "p", "crna"))
     figure.append(Figura([0, 3], "k", "crna"))
-    print (figure)
     root = Tk()
 
     root.title("Sah")
@@ -38,7 +37,10 @@ def page1():
         for i, col in enumerate(B):
             B[i] = [0]*8
             for j, _ in enumerate(col):
-                B[i][j] = Button(window, text = fig.type + " - " + fig.boja, height=5, width=12, command = fig.move) if [i, j] == fig.pos else Button(window, text = " ", height=5, width=12)
+                if (i % 2) == 0 and (j % 2) == 1 or (i % 2) == 1 and (j % 2) == 0:
+                    B[i][j] = Button(window, text = fig.type + " - " + fig.boja, height=5, width=12, command = fig.move, bg="blue") if [i, j] == fig.pos else Button(window, text = " ", height=5, width=12, bg="blue")
+                else:
+                    B[i][j] = Button(window, text = fig.type + " - " + fig.boja, height=5, width=12, command = fig.move) if [i, j] == fig.pos else Button(window, text = " ", height=5, width=12)
                 if [i, j] not in figpos:
                     B[i][j].grid(row=i, column=j)
         figpos.append(fig.pos)
