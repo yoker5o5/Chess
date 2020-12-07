@@ -1,6 +1,7 @@
 import sys
 from tkinter import *
 class Figura:
+
     def __init__(self, pos, type, boja):
         self.pos = pos
         self.type = type
@@ -29,6 +30,9 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
+        figpos = []
+        for fig in figure:
+            figpos.append(fig.pos)
         x = self.pos[0]
         y = self.pos[1]
         if self.type == "piun":
@@ -45,12 +49,28 @@ class Figura:
                 i -= 1
             self.tempbutton(i, j)
         elif self.type == "top":
-            for i in range(8):
+            for i in range(x, 8):
+                print(i)
                 if x != i:
                     self.tempbutton(i, y)
-            for j in range(8):
+                    if [i, y] in figpos and i > x:
+                        break
+            for i in range(x, -1, -1):
+                print(i)
+                if x != i:
+                    self.tempbutton(i, y)
+                    if [i, y] in figpos and i < x:
+                        break
+            for j in range(y, 8):
                 if j != y:
                     self.tempbutton(x, j)
+                    if [x, j] in figpos and j > y:
+                        break
+            for j in range(y, -1, -1):
+                if j != y:
+                    self.tempbutton(x, j)
+                    if [x, j] in figpos and j < y:
+                        break
         elif self.type == "lovac":
             for i in range(8):
                 for j in range(8):
@@ -114,7 +134,7 @@ def main(*args):
     root = Tk()
     root.title("Sah")
     window = Frame(root,bg='lightblue')
-    page1()
+    tabla()
     figure = []
     for i in [0, 7]:
         figure.append(Figura([0, i], "top", "black"))
@@ -136,7 +156,7 @@ def main(*args):
 
     root.mainloop()
 
-def page1():
+def tabla():
     root.geometry("751x688")
     window.place(relx=0,rely=0,relheight=1,relwidth=1)
 
