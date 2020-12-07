@@ -50,13 +50,11 @@ class Figura:
             self.tempbutton(i, j)
         elif self.type == "top":
             for i in range(x, 8):
-                print(i)
                 if x != i:
                     self.tempbutton(i, y)
                     if [i, y] in figpos and i > x:
                         break
             for i in range(x, -1, -1):
-                print(i)
                 if x != i:
                     self.tempbutton(i, y)
                     if [i, y] in figpos and i < x:
@@ -72,12 +70,38 @@ class Figura:
                     if [x, j] in figpos and j < y:
                         break
         elif self.type == "lovac":
-            for i in range(8):
-                for j in range(8):
-                    if i-x == j-y and [i, j] != [x, y]:
-                        self.tempbutton(i, j)
-                    elif ((i-x) + (j-y)) == 0 and [i, j] != [x, y]:
-                        self.tempbutton(i, j)
+            i = x
+            j = y
+            while i < 7 and j < 7:
+                i += 1
+                j += 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j > 0:
+                i -= 1
+                j -= 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i < 7 and j > 0:
+                i += 1
+                j -= 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j < 7:
+                i -= 1
+                j += 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
         elif self.type == "konj":
             xx = [x+2, x-2]
             yy = [y-1, y+1]
@@ -106,18 +130,58 @@ class Figura:
                         except:
                             pass
         elif self.type == "kraljica":
-            for i in range(8):
+            for i in range(x, 8):
                 if x != i:
                     self.tempbutton(i, y)
-            for j in range(8):
+                    if [i, y] in figpos and i > x:
+                        break
+            for i in range(x, -1, -1):
+                if x != i:
+                    self.tempbutton(i, y)
+                    if [i, y] in figpos and i < x:
+                        break
+            for j in range(y, 8):
                 if j != y:
                     self.tempbutton(x, j)
-            for i in range(8):
-                for j in range(8):
-                    if i-x == j-y and [i, j] != [x, y]:
-                        self.tempbutton(i, j)
-                    elif ((i-x) + (j-y)) == 0 and [i, j] != [x, y]:
-                        self.tempbutton(i, j)
+                    if [x, j] in figpos and j > y:
+                        break
+            for j in range(y, -1, -1):
+                if j != y:
+                    self.tempbutton(x, j)
+                    if [x, j] in figpos and j < y:
+                        break
+            i = x
+            j = y
+            while i < 7 and j < 7:
+                i += 1
+                j += 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j > 0:
+                i -= 1
+                j -= 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i < 7 and j > 0:
+                i += 1
+                j -= 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j < 7:
+                i -= 1
+                j += 1
+                self.tempbutton(i, j)
+                if [i,j] in figpos:
+                    break
     def move(self, x):
         self.button.destroy()
         self.pos = x
