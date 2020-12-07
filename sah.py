@@ -48,7 +48,7 @@ class Figura:
                     self.tempbutton(i-2, j)
                 i -= 1
             self.tempbutton(i, j)
-        elif self.type == "top":
+        elif self.type == "top" or self.type == "kraljica":
             for i in range(x, 8):
                 if x != i:
                     self.tempbutton(i, y)
@@ -69,7 +69,7 @@ class Figura:
                     self.tempbutton(x, j)
                     if [x, j] in figpos and j < y:
                         break
-        elif self.type == "lovac":
+        if self.type == "lovac" or self.type == "kraljica":
             i = x
             j = y
             while i < 7 and j < 7:
@@ -129,59 +129,6 @@ class Figura:
                             self.tempbutton(i, j)
                         except:
                             pass
-        elif self.type == "kraljica":
-            for i in range(x, 8):
-                if x != i:
-                    self.tempbutton(i, y)
-                    if [i, y] in figpos and i > x:
-                        break
-            for i in range(x, -1, -1):
-                if x != i:
-                    self.tempbutton(i, y)
-                    if [i, y] in figpos and i < x:
-                        break
-            for j in range(y, 8):
-                if j != y:
-                    self.tempbutton(x, j)
-                    if [x, j] in figpos and j > y:
-                        break
-            for j in range(y, -1, -1):
-                if j != y:
-                    self.tempbutton(x, j)
-                    if [x, j] in figpos and j < y:
-                        break
-            i = x
-            j = y
-            while i < 7 and j < 7:
-                i += 1
-                j += 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i > 0 and j > 0:
-                i -= 1
-                j -= 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i < 7 and j > 0:
-                i += 1
-                j -= 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i > 0 and j < 7:
-                i -= 1
-                j += 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
     def move(self, x):
         self.button.destroy()
         self.pos = x
