@@ -12,6 +12,100 @@ class Figura:
             B[i] = [0]*8
         self.createbutton()
 
+    def possiblemoves(self):
+        self.posmoves = []
+        figpos = []
+        for fig in figure:
+            figpos.append(fig.pos)
+        x = self.pos[0]
+        y = self.pos[1]
+        if self.type == "piun":
+            j = self.pos[1]
+            if self.boja == "black":
+                i = self.pos[0]
+                if i == 1:
+                    self.posmoves.append([i+2, j])
+                i += 1
+            else: 
+                i = self.pos[0]
+                if i == 6:
+                    self.posmoves.append([i-2, j])
+                i -= 1
+            self.posmoves.append([i, j])
+        elif self.type == "top" or self.type == "kraljica":
+            for i in range(x, 8):
+                if x != i:
+                    self.posmoves.append([i, y])
+                    if [i, y] in figpos and i > x:
+                        break
+            for i in range(x, -1, -1):
+                if x != i:
+                    self.posmoves.append([i, y])
+                    if [i, y] in figpos and i < x:
+                        break
+            for j in range(y, 8):
+                if j != y:
+                    self.posmoves.append([x, j])
+                    if [x, j] in figpos and j > y:
+                        break
+            for j in range(y, -1, -1):
+                if j != y:
+                    self.posmoves.append([x, j])
+                    if [x, j] in figpos and j < y:
+                        break
+        if self.type == "lovac" or self.type == "kraljica":
+            i = x
+            j = y
+            while i < 7 and j < 7:
+                i += 1
+                j += 1
+                self.posmoves.append([i, j])
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j > 0:
+                i -= 1
+                j -= 1
+                self.posmoves.append([i, j])
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i < 7 and j > 0:
+                i += 1
+                j -= 1
+                self.posmoves.append([i, j])
+                if [i,j] in figpos:
+                    break
+            i = x
+            j = y
+            while i > 0 and j < 7:
+                i -= 1
+                j += 1
+                self.posmoves.append([i, j])
+                if [i,j] in figpos:
+                    break
+        elif self.type == "konj":
+            xx = [x+2, x-2]
+            yy = [y-1, y+1]
+            xxx = [x+1, x-1]
+            yyy = [y+2, y-2]
+            for i in xx:
+                for j in yy:
+                    self.posmoves.append([i, j])
+            for i in xxx:
+                for j in yyy:
+                    self.posmoves.append([i, j])
+        elif self.type == "kralj":
+            xx = [x+1, x-1, x]
+            yy = [y+1, y-1, y]
+            for i in xx:
+                for j in yy:
+                    if i != x or j != y:
+                        self.posmoves.append([i, j])
+        return self.posmoves
+
     def createbutton(self):
         self.button = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves, bg="blue") if (self.pos[0] % 2) == 0 and (self.pos[1] % 2) == 1 or (self.pos[0] % 2) == 1 and (self.pos[1] % 2) == 0 else Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves)
         self.button.grid(row=self.pos[0], column=self.pos[1])
@@ -30,108 +124,19 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
-        figpos = []
-        for fig in figure:
-            figpos.append(fig.pos)
-        x = self.pos[0]
-        y = self.pos[1]
-        if self.type == "piun":
-            j = self.pos[1]
-            if self.boja == "black":
-                i = self.pos[0]
-                if i == 1:
-                    self.tempbutton(i+2, j)
-                i += 1
-            else: 
-                i = self.pos[0]
-                if i == 6:
-                    self.tempbutton(i-2, j)
-                i -= 1
-            self.tempbutton(i, j)
-        elif self.type == "top" or self.type == "kraljica":
-            for i in range(x, 8):
-                if x != i:
-                    self.tempbutton(i, y)
-                    if [i, y] in figpos and i > x:
-                        break
-            for i in range(x, -1, -1):
-                if x != i:
-                    self.tempbutton(i, y)
-                    if [i, y] in figpos and i < x:
-                        break
-            for j in range(y, 8):
-                if j != y:
-                    self.tempbutton(x, j)
-                    if [x, j] in figpos and j > y:
-                        break
-            for j in range(y, -1, -1):
-                if j != y:
-                    self.tempbutton(x, j)
-                    if [x, j] in figpos and j < y:
-                        break
-        if self.type == "lovac" or self.type == "kraljica":
-            i = x
-            j = y
-            while i < 7 and j < 7:
-                i += 1
-                j += 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i > 0 and j > 0:
-                i -= 1
-                j -= 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i < 7 and j > 0:
-                i += 1
-                j -= 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-            i = x
-            j = y
-            while i > 0 and j < 7:
-                i -= 1
-                j += 1
-                self.tempbutton(i, j)
-                if [i,j] in figpos:
-                    break
-        elif self.type == "konj":
-            xx = [x+2, x-2]
-            yy = [y-1, y+1]
-            xxx = [x+1, x-1]
-            yyy = [y+2, y-2]
-            for i in xx:
-                for j in yy:
-                    try:
-                        self.tempbutton(i, j)
-                    except:
-                        pass
-            for i in xxx:
-                for j in yyy:
-                    try:
-                        self.tempbutton(i, j)
-                    except:
-                        pass
-        elif self.type == "kralj":
-            xx = [x+1, x-1, x]
-            yy = [y+1, y-1, y]
-            for i in xx:
-                for j in yy:
-                    if i != x or j != y:
-                        try:
-                            self.tempbutton(i, j)
-                        except:
-                            pass
+        self.possiblemoves()
+        for move in self.posmoves:
+            try:
+                self.tempbutton(move[0], move[1])
+            except:
+                pass
+
     def move(self, x):
         self.button.destroy()
         self.pos = x
+        for fig in figure:
+            if self.pos == fig.pos:
+                fig.button.destroy()
         self.createbutton()
         for i in range(8):
             for j in range(8):
