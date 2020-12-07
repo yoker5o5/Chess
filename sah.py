@@ -15,6 +15,14 @@ class Figura:
         self.button = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves, bg="blue") if (self.pos[0] % 2) == 0 and (self.pos[1] % 2) == 1 or (self.pos[0] % 2) == 1 and (self.pos[1] % 2) == 0 else Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves)
         self.button.grid(row=self.pos[0], column=self.pos[1])
 
+    def tempbutton(self, i, j):
+        figpos = []
+        for fig in figure:
+            figpos.append([fig.pos, fig.boja])
+        if [[i, j], self.boja] not in figpos:
+            B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
+            B[i][j].grid(row=i, column=j)
+
     def moves(self):
         global B
         for i in range(8):
@@ -28,35 +36,28 @@ class Figura:
             if self.boja == "black":
                 i = self.pos[0]
                 if i == 1:
-                    B[i+2][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i+2, j]: self.move(x), bg="red")
-                    B[i+2][j].grid(row=i+2, column=j)
+                    self.tempbutton(i+2, j)
                 i += 1
             else: 
                 i = self.pos[0]
                 if i == 6:
-                    B[i-2][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i-2, j]: self.move(x), bg="red")
-                    B[i-2][j].grid(row=i-2, column=j)
+                    self.tempbutton(i-2, j)
                 i -= 1
-            B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-            B[i][j].grid(row=i, column=j)
+            self.tempbutton(i, j)
         elif self.type == "top":
             for i in range(8):
                 if x != i:
-                    B[i][y] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, y]: self.move(x), bg="red")
-                    B[i][y].grid(row=i, column=y)
+                    self.tempbutton(i, y)
             for j in range(8):
                 if j != y:
-                    B[x][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[x, j]: self.move(x), bg="red")
-                    B[x][j].grid(row=x, column=j)
+                    self.tempbutton(x, j)
         elif self.type == "lovac":
             for i in range(8):
                 for j in range(8):
                     if i-x == j-y and [i, j] != [x, y]:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
                     elif ((i-x) + (j-y)) == 0 and [i, j] != [x, y]:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
         elif self.type == "konj":
             xx = [x+2, x-2]
             yy = [y-1, y+1]
@@ -65,15 +66,13 @@ class Figura:
             for i in xx:
                 for j in yy:
                     try:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
                     except:
                         pass
             for i in xxx:
                 for j in yyy:
                     try:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
                     except:
                         pass
         elif self.type == "kralj":
@@ -83,27 +82,22 @@ class Figura:
                 for j in yy:
                     if i != x or j != y:
                         try:
-                            B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                            B[i][j].grid(row=i, column=j)
+                            self.tempbutton(i, j)
                         except:
                             pass
         elif self.type == "kraljica":
             for i in range(8):
                 if x != i:
-                    B[i][y] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, y]: self.move(x), bg="red")
-                    B[i][y].grid(row=i, column=y)
+                    self.tempbutton(i, y)
             for j in range(8):
                 if j != y:
-                    B[x][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[x, j]: self.move(x), bg="red")
-                    B[x][j].grid(row=x, column=j)
+                    self.tempbutton(x, j)
             for i in range(8):
                 for j in range(8):
                     if i-x == j-y and [i, j] != [x, y]:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
                     elif ((i-x) + (j-y)) == 0 and [i, j] != [x, y]:
-                        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-                        B[i][j].grid(row=i, column=j)
+                        self.tempbutton(i, j)
     def move(self, x):
         self.button.destroy()
         self.pos = x
