@@ -26,12 +26,21 @@ class Figura:
                 if i == 1:
                     self.posmoves.append([i+2, j])
                 i += 1
+                if [i, j+1] in figpos:
+                    self.posmoves.append([i, j+1])
+                if [i, j-1] in figpos:
+                    self.posmoves.append([i, j-1])
             else: 
                 i = self.pos[0]
                 if i == 6:
                     self.posmoves.append([i-2, j])
                 i -= 1
-            self.posmoves.append([i, j])
+                if [i, j+1] in figpos:
+                    self.posmoves.append([i, j+1])
+                if [i, j-1] in figpos:
+                    self.posmoves.append([i, j-1])
+            if [i, j] not in figpos:
+                self.posmoves.append([i, j])
         elif self.type == "top" or self.type == "kraljica":
             for i in range(x, 8):
                 if x != i:
@@ -136,6 +145,11 @@ class Figura:
             if x == fig.pos:
                 fig.button.destroy()
                 figure.remove(fig)
+        print(x[0])
+        if self.type == "piun" and self.boja == "white" and x[0] == 0:
+            self.type = "kraljica"
+        if self.type == "piun" and self.boja == "black" and x[0] == 7:
+            self.type = "kraljica"
         self.pos = x
         self.createbutton()
         for i in range(8):
