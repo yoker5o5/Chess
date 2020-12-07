@@ -124,8 +124,7 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
-        self.possiblemoves()
-        for move in self.posmoves:
+        for move in self.possiblemoves():
             try:
                 self.tempbutton(move[0], move[1])
             except:
@@ -133,10 +132,11 @@ class Figura:
 
     def move(self, x):
         self.button.destroy()
-        self.pos = x
         for fig in figure:
-            if self.pos == fig.pos:
+            if x == fig.pos:
                 fig.button.destroy()
+                figure.remove(fig)
+        self.pos = x
         self.createbutton()
         for i in range(8):
             for j in range(8):
