@@ -133,17 +133,6 @@ class Figura:
     def createbutton(self):
         self.button = Button(window, text = self.type, fg="white", height=4, width=10, command = self.moves, bg=self.boja) if self.boja == "black" else Button(window, text = self.type, fg="black", height=4, width=10, command = self.moves, bg=self.boja)
         self.button.grid(row=self.pos[0], column=self.pos[1])
-    # def createbutton(self):
-    #     self.button = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves, bg="blue") if (self.pos[0] % 2) == 0 and (self.pos[1] % 2) == 1 or (self.pos[0] % 2) == 1 and (self.pos[1] % 2) == 0 else Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves)
-    #     self.button.grid(row=self.pos[0], column=self.pos[1])
-
-    def tempbutton(self, i, j):
-        # figpos = []
-        # for fig in figure:
-        #     figpos.append([fig.pos, fig.boja])
-        # if [[i, j], self.boja] not in figpos:
-        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-        B[i][j].grid(row=i, column=j)
 
     def moves(self):
         global B
@@ -151,8 +140,9 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
-        for move in self.possiblemoves():
-            self.tempbutton(move[0], move[1])
+        for i, j in self.possiblemoves():
+            B[i][j] = Button(window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
+            B[i][j].grid(row=i, column=j)
 
     def move(self, x):
         self.button.destroy()
