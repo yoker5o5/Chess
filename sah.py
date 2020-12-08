@@ -1,5 +1,6 @@
 import sys
 from tkinter import *
+import random
 class Figura:
 
     def __init__(self, pos, type, boja):
@@ -11,6 +12,7 @@ class Figura:
         for i in range(8):
             B[i] = [0]*8
         self.createbutton()
+
 
     def possiblemoves(self):
         self.posmoves = []
@@ -102,30 +104,46 @@ class Figura:
             yyy = [y+2, y-2]
             for i in xx:
                 for j in yy:
-                    self.posmoves.append([i, j])
+                    if i > -1 and j > -1 and i < 8 and j < 8:
+                        self.posmoves.append([i, j])
             for i in xxx:
                 for j in yyy:
-                    self.posmoves.append([i, j])
+                    if i > -1 and j > -1 and i < 8 and j < 8:
+                        self.posmoves.append([i, j])
         elif self.type == "kralj":
             xx = [x+1, x-1, x]
             yy = [y+1, y-1, y]
             for i in xx:
                 for j in yy:
                     if i != x or j != y:
-                        self.posmoves.append([i, j])
-        return self.posmoves
+                        if i > -1 and j > -1 and i < 8 and j < 8:
+                            if self.boja == "black" and [i, j] not in whiteposmoves:
+                                self.posmoves.append([i, j])
+                            if self.boja == "white" and [i, j] not in blackposmoves:
+                                self.posmoves.append([i, j])
+        figpos2 = []
+        temp = []
+        for fig in figure:
+            figpos2.append((fig.pos, fig.boja))
+        for x2 in self.posmoves:
+            if (x2, self.boja) not in figpos2:
+                temp.append(x2)
+        return temp
 
     def createbutton(self):
-        self.button = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves, bg="blue") if (self.pos[0] % 2) == 0 and (self.pos[1] % 2) == 1 or (self.pos[0] % 2) == 1 and (self.pos[1] % 2) == 0 else Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves)
+        self.button = Button(window, text = self.type, fg="white", height=4, width=10, command = self.moves, bg=self.boja) if self.boja == "black" else Button(window, text = self.type, fg="black", height=4, width=10, command = self.moves, bg=self.boja)
         self.button.grid(row=self.pos[0], column=self.pos[1])
+    # def createbutton(self):
+    #     self.button = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves, bg="blue") if (self.pos[0] % 2) == 0 and (self.pos[1] % 2) == 1 or (self.pos[0] % 2) == 1 and (self.pos[1] % 2) == 0 else Button(window, text = self.type, fg=self.boja, height=5, width=12, command = self.moves)
+    #     self.button.grid(row=self.pos[0], column=self.pos[1])
 
     def tempbutton(self, i, j):
-        figpos = []
-        for fig in figure:
-            figpos.append([fig.pos, fig.boja])
-        if [[i, j], self.boja] not in figpos:
-            B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
-            B[i][j].grid(row=i, column=j)
+        # figpos = []
+        # for fig in figure:
+        #     figpos.append([fig.pos, fig.boja])
+        # if [[i, j], self.boja] not in figpos:
+        B[i][j] = Button(window, text = self.type, fg=self.boja, height=5, width=12, command = lambda x=[i, j]: self.move(x), bg="red")
+        B[i][j].grid(row=i, column=j)
 
     def moves(self):
         global B
@@ -134,10 +152,7 @@ class Figura:
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
         for move in self.possiblemoves():
-            try:
-                self.tempbutton(move[0], move[1])
-            except:
-                pass
+            self.tempbutton(move[0], move[1])
 
     def move(self, x):
         self.button.destroy()
@@ -145,7 +160,6 @@ class Figura:
             if x == fig.pos:
                 fig.button.destroy()
                 figure.remove(fig)
-        print(x[0])
         if self.type == "piun" and self.boja == "white" and x[0] == 0:
             self.type = "kraljica"
         if self.type == "piun" and self.boja == "black" and x[0] == 7:
@@ -156,15 +170,49 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
-        
+        randommove("black")
+        checkpos()
 
-def main(*args):
-    global root, figure
-    global window
-    root = Tk()
-    root.title("Sah")
-    window = Frame(root,bg='lightblue')
-    tabla()
+        
+def checkpos():
+    global whiteposmoves, blackposmoves
+    whiteposmoves = []
+    blackposmoves = []
+    for fig in figure:
+        if fig.boja == "white":
+            whiteposmoves.extend(fig.possiblemoves())
+        elif fig.boja == "black":
+            blackposmoves.extend(fig.possiblemoves())
+
+def randommove(boja):
+        randomfigura = random.choice(figure)
+        while randomfigura.boja != boja or len(randomfigura.possiblemoves()) == 0:
+            randomfigura = random.choice(figure)
+        # bestmove = 0
+        # best = [0, 0]
+        # print(randomfigura.possiblemoves())
+        # for i, move in enumerate(randomfigura.possiblemoves()):
+        #     print(move)
+        #     if (move[0] + move[1]) > bestmove:
+        #         bestmove = move[0] + move[1]
+        #         best = move
+        randommove = random.choice(randomfigura.possiblemoves())
+        #randommove = best
+        #print(randommove)
+        randomfigura.button.destroy()
+        for fig in figure:
+            if randommove == fig.pos:
+                fig.button.destroy()
+                figure.remove(fig)
+        if randomfigura.type == "piun" and randomfigura.boja == "white" and randommove[0] == 0:
+            randomfigura.type = "kraljica"
+        if randomfigura.type == "piun" and randomfigura.boja == "black" and randommove[0] == 7:
+            randomfigura.type = "kraljica"
+        randomfigura.pos = randommove
+        randomfigura.createbutton()
+
+def ucitajfigure():
+    global figure
     figure = []
     for i in [0, 7]:
         figure.append(Figura([0, i], "top", "black"))
@@ -183,11 +231,16 @@ def main(*args):
     figure.append(Figura([0, 3], "kraljica", "black"))
     figure.append(Figura([7, 4], "kralj", "white"))
     figure.append(Figura([7, 3], "kraljica", "white"))
-
+    checkpos()
     root.mainloop()
 
 def tabla():
-    root.geometry("751x688")
+    global root
+    global window
+    root = Tk()
+    root.title("Sah")
+    window = Frame(root,bg='lightblue')
+    root.geometry("830x767")
     window.place(relx=0,rely=0,relheight=1,relwidth=1)
 
     B = [[0]*8]*8
@@ -195,10 +248,15 @@ def tabla():
     for i, col in enumerate(B):
         for j, _ in enumerate(col):
             if (i % 2) == 0 and (j % 2) == 1 or (i % 2) == 1 and (j % 2) == 0:
-                B[i][j] = Label(window, text = " ", height=5, width=12, bg="blue")
+                B[i][j] = Label(window, text = " ", height=6, width=14, bg="black")
             else:
-                B[i][j] = Label(window, text = " ", height=5, width=12)
+                B[i][j] = Label(window, text = " ", height=6, width=14)
             B[i][j].grid(row= i, column=j)
+
+
+def main(*args):
+    tabla()
+    ucitajfigure()
 
 if __name__ == '__main__':
     _, *script_args = sys.argv
