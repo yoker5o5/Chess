@@ -160,7 +160,7 @@ class Figura:
             for j in range(8):
                 if type(B[i][j]) != int:
                     B[i][j].destroy()
-        randommove("black")
+        #randommove("black")
         checkpos()
 
         
