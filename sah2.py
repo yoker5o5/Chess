@@ -36,21 +36,22 @@ class Figura:
         self.window = tabla
         self.enemycolor = "white" if self.boja == "black" else "black"
         Figura.figpos.append((pos, boja))
-        self.posmoves = []
 
 
     def checkfigpos(self):
         pass
 
     def createbutton(self):
-        self.button = Button(self.window, text = self.type, fg=self.enemycolor, height=4, width=10, command = self.possiblemoves, bg=self.boja)
+        self.button = Button(self.window, text = self.type, fg=self.enemycolor, height=4, width=10, command = self.moves, bg=self.boja)
         self.button.grid(row=self.pos[0], column=self.pos[1])
 
     def moves(self):
+        self.posmoves = []
         for i in range(8):
             for j in range(8):
                 if type(Figura.B[i][j]) != int:
                     Figura.B[i][j].destroy()
+        self.possiblemoves()
         for i, j in self.posmoves:
             Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
             Figura.B[i][j].grid(row=i, column=j)
@@ -68,7 +69,6 @@ class Figura:
         self.pos = x
         self.figpos.append((self.pos, self.boja))
         self.button.grid(row=self.pos[0], column=self.pos[1])
-        self.posmoves = []
         for i in range(8):
             for j in range(8):
                 if type(Figura.B[i][j]) != int:
@@ -100,7 +100,6 @@ class Piun(Figura):
             # if [i, j-1] in figpos:
             #     self.posmoves.append([i, j-1])
         self.posmoves.append([i, j])
-        self.moves()
 
 class Top(Figura):
 
@@ -140,7 +139,6 @@ class Top(Figura):
                 self.posmoves.append([x, j])
                 if ([x, j], self.enemycolor) in Figura.figpos and j < y:
                     break
-        self.moves()
     
 class Lovac(Figura):
 
@@ -190,7 +188,6 @@ class Lovac(Figura):
             self.posmoves.append([i, j])
             if ([i,j], self.enemycolor) in Figura.figpos:
                 break
-        self.moves()
 class Kraljica(Figura):
 
     def __init__(self, pos, boja, tabla):
