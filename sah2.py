@@ -91,24 +91,24 @@ class Piun(Figura):
         i = self.pos[0]
         j = self.pos[1]
         if self.boja == "black":
-            #if Figura.kraljcheck == 0:
-            if i == 1:
-                self.posmoves.append([i+2, j])
-                for fig in figure:
-                    if fig.pos == [i+2, j] or fig.pos == [i+1, j]:
-                        self.posmoves.remove([i+2, j])
+            if Figura.kraljcheck == 0:
+                if i == 1:
+                    self.posmoves.append([i+2, j])
+                    for fig in figure:
+                        if fig.pos == [i+2, j] or fig.pos == [i+1, j]:
+                            self.posmoves.remove([i+2, j])
             i += 1
             if ([i, j+1], self.enemycolor)  in Figura.figpos:
                 self.posmoves.append([i, j+1])
             if ([i, j-1], self.enemycolor) in Figura.figpos:
                 self.posmoves.append([i, j-1])
         else: 
-            #if Figura.kraljcheck == 0:
-            if i == 6:
-                self.posmoves.append([i-2, j])
-                for fig in figure:
-                    if fig.pos == [i-2, j] or fig.pos == [i-1, j]:
-                        self.posmoves.remove([i-2, j])
+            if Figura.kraljcheck == 0:
+                if i == 6:
+                    self.posmoves.append([i-2, j])
+                    for fig in figure:
+                        if fig.pos == [i-2, j] or fig.pos == [i-1, j]:
+                            self.posmoves.remove([i-2, j])
             i -= 1
             if ([i, j+1], self.enemycolor)  in Figura.figpos:
                 self.posmoves.append([i, j+1])
@@ -128,28 +128,28 @@ class Top(Figura):
         y = self.pos[1]
         for i in range(x, 8):
             if x != i:
-                if ([i, y], self.boja) in Figura.figpos and i > x:
+                if ([i, y], self.boja) in Figura.figpos and i > x and ([i, y], self.enemycolor) not in Figura.figpos:
                     break
                 self.posmoves.append([i, y])
                 if ([i, y], self.enemycolor) in Figura.figpos and i > x:
                     break
         for i in range(x, -1, -1):
             if x != i:
-                if ([i, y], self.boja) in Figura.figpos and i < x:
+                if ([i, y], self.boja) in Figura.figpos and i < x and ([i, y], self.enemycolor) not in Figura.figpos:
                     break
                 self.posmoves.append([i, y])
                 if ([i, y], self.enemycolor) in Figura.figpos and i < x:
                     break
         for j in range(y, 8):
             if j != y:
-                if ([x, j], self.boja) in Figura.figpos and j > y:
+                if ([x, j], self.boja) in Figura.figpos and j > y and ([x, j], self.enemycolor) not in Figura.figpos:
                     break
                 self.posmoves.append([x, j])
                 if ([x, j], self.enemycolor) in Figura.figpos and j > y:
                     break
         for j in range(y, -1, -1):
             if j != y:
-                if ([x, j], self.boja) in Figura.figpos and j < y:
+                if ([x, j], self.boja) in Figura.figpos and j < y and ([x, j], self.enemycolor) not in Figura.figpos:
                     break
                 self.posmoves.append([x, j])
                 if ([x, j], self.enemycolor) in Figura.figpos and j < y:
@@ -167,7 +167,7 @@ class Lovac(Figura):
         while i < 7 and j < 7:
             i += 1
             j += 1
-            if ([i,j], self.boja) in Figura.figpos:
+            if ([i,j], self.boja) in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos:
                 break
             self.posmoves.append([i, j])
             if ([i,j], self.enemycolor) in Figura.figpos:
@@ -177,7 +177,7 @@ class Lovac(Figura):
         while i > 0 and j > 0:
             i -= 1
             j -= 1
-            if ([i,j], self.boja) in Figura.figpos:
+            if ([i,j], self.boja) in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos:
                 break
             self.posmoves.append([i, j])
             if ([i,j], self.enemycolor) in Figura.figpos:
@@ -187,7 +187,7 @@ class Lovac(Figura):
         while i < 7 and j > 0:
             i += 1
             j -= 1
-            if ([i,j], self.boja) in Figura.figpos:
+            if ([i,j], self.boja) in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos:
                 break
             self.posmoves.append([i, j])
             if ([i,j], self.enemycolor) in Figura.figpos:
@@ -197,7 +197,7 @@ class Lovac(Figura):
         while i > 0 and j < 7:
             i -= 1
             j += 1
-            if ([i,j], self.boja) in Figura.figpos:
+            if ([i,j], self.boja) in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos:
                 break
             self.posmoves.append([i, j])
             if ([i,j], self.enemycolor) in Figura.figpos:
@@ -227,12 +227,12 @@ class Konj(Figura):
         for i in xx:
             for j in yy:
                 if i > -1 and j > -1 and i < 8 and j < 8:
-                    if ([i, j], self.boja) not in Figura.figpos:
+                    if ([i, j], self.boja) not in Figura.figpos or ([i,j], self.enemycolor) in Figura.figpos:
                         self.posmoves.append([i, j])
         for i in xxx:
             for j in yyy:
                 if i > -1 and j > -1 and i < 8 and j < 8:
-                    if ([i, j], self.boja) not in Figura.figpos:
+                    if ([i, j], self.boja) not in Figura.figpos or ([i,j], self.enemycolor) in Figura.figpos:
                         self.posmoves.append([i, j])
 
 class Kralj(Figura):
