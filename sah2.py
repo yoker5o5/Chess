@@ -1,5 +1,14 @@
 import sys
 from tkinter import *
+
+class Player:
+    def __init__(self, name, color):
+        self.name = name
+        self.color = color
+        self.enemycolor = "white" if color == "black" else "black"
+        self.chess = False
+        self.napotezu = 1 if color == "white" else 0
+        
 class Tabla:
     def __init__(self):
         self.root = Tk()
@@ -42,15 +51,18 @@ class Figura:
         self.button.grid(row=self.pos[0], column=self.pos[1])
 
     def moves(self):
-        self.posmoves = []
-        for i in range(8):
-            for j in range(8):
-                if type(Figura.B[i][j]) != int:
-                    Figura.B[i][j].destroy()
-        self.possiblemoves()
-        for i, j in self.posmoves:
-            Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
-            Figura.B[i][j].grid(row=i, column=j)
+        for pl in players:
+            if pl.napotezu == 1 and pl.color == self.boja:
+                if pl.chess and self.type == "kralj" or pl.chess == False:
+                    self.posmoves = []
+                    for i in range(8):
+                        for j in range(8):
+                            if type(Figura.B[i][j]) != int:
+                                Figura.B[i][j].destroy()
+                    self.possiblemoves()
+                    for i, j in self.posmoves:
+                        Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
+                        Figura.B[i][j].grid(row=i, column=j)
 
     def remove(self): 
         self.button.destroy()
@@ -78,6 +90,23 @@ class Figura:
             for fig in figure:
                 if fig.pos == x and fig != self:
                     fig.remove()
+            for pl in players:
+                if pl.napotezu == 0:
+                    if self.checkchess():
+                        pl.chess = True
+                else:
+                    pl.chess = False
+
+                pl.napotezu = 0 if pl.napotezu == 1 else 1
+    
+    def checkchess(self):
+        for fig in figure:
+            if fig.type == "kralj":
+                self.posmoves = []
+                self.possiblemoves()
+                if fig.pos in self.posmoves:
+                    return True
+        return False
 
         
         
@@ -265,8 +294,11 @@ class Kralj(Figura):
                                         
 
 def main(*args):
-    global figure
+    global figure, players
     t = Tabla()
+    players = []
+    players.append(Player("Djordje", "white"))
+    players.append(Player("Boris", "black"))
     figure = []
     for i in [0, 7]:
         figure.append(Top([0, i], "black", t.window))
