@@ -1,6 +1,5 @@
 import sys
 from tkinter import *
-
 class Tabla:
     def __init__(self):
         self.root = Tk()
@@ -242,10 +241,15 @@ class Kralj(Figura):
                 if i != x or j != y:
                     if i > -1 and j > -1 and i < 8 and j < 8:
                         if ([i,j], self.boja) not in Figura.figpos:
-                        # if self.boja == "black" and [i, j] not in whiteposmoves:
                             self.posmoves.append([i, j])
-                        # if self.boja == "white" and [i, j] not in blackposmoves:
-                        #     self.posmoves.append([i, j])
+                            for fig in figure:
+                                if fig.type != "kralj":
+                                    fig.posmoves = []
+                                    fig.possiblemoves()
+                                    if fig.boja != self.boja and [i, j] in fig.posmoves and [i, j] in self.posmoves:
+                                        self.posmoves.remove([i, j])
+                                        
+
 def main(*args):
     global figure
     t = Tabla()
