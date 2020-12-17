@@ -24,7 +24,7 @@ class Tabla:
 
 class Figura:
     figpos = []
-
+    kraljcheck = 0
     B = [[0]*8]*8
     for i in range(8):
         B[i] = [0]*8
@@ -74,9 +74,10 @@ class Figura:
             for j in range(8):
                 if type(Figura.B[i][j]) != int:
                     Figura.B[i][j].destroy()
-        for fig in figure:
-            if fig.pos == x and fig != self:
-                fig.remove()
+        if Figura.kraljcheck == 0:
+            for fig in figure:
+                if fig.pos == x and fig != self:
+                    fig.remove()
 
         
         
@@ -90,22 +91,30 @@ class Piun(Figura):
         i = self.pos[0]
         j = self.pos[1]
         if self.boja == "black":
+            #if Figura.kraljcheck == 0:
             if i == 1:
                 self.posmoves.append([i+2, j])
+                for fig in figure:
+                    if fig.pos == [i+2, j] or fig.pos == [i+1, j]:
+                        self.posmoves.remove([i+2, j])
             i += 1
-            # if [i, j+1] in figpos:
-            #     self.posmoves.append([i, j+1])
-            # if [i, j-1] in figpos:
-            #     self.posmoves.append([i, j-1])
+            if ([i, j+1], self.enemycolor)  in Figura.figpos:
+                self.posmoves.append([i, j+1])
+            if ([i, j-1], self.enemycolor) in Figura.figpos:
+                self.posmoves.append([i, j-1])
         else: 
+            #if Figura.kraljcheck == 0:
             if i == 6:
                 self.posmoves.append([i-2, j])
+                for fig in figure:
+                    if fig.pos == [i-2, j] or fig.pos == [i-1, j]:
+                        self.posmoves.remove([i-2, j])
             i -= 1
-            # if [i, j+1] in figpos:
-            #     self.posmoves.append([i, j+1])
-            # if [i, j-1] in figpos:
-            #     self.posmoves.append([i, j-1])
-        if i >= 0 and i < 8:
+            if ([i, j+1], self.enemycolor)  in Figura.figpos:
+                self.posmoves.append([i, j+1])
+            if ([i, j-1], self.enemycolor) in Figura.figpos:
+                self.posmoves.append([i, j-1])
+        if i >= 0 and i < 8 and ([i,j], self.boja) not in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos: #and Figura.kraljcheck == 0
             self.posmoves.append([i, j])
 
 class Top(Figura):
@@ -241,6 +250,9 @@ class Kralj(Figura):
                 if i != x or j != y:
                     if i > -1 and j > -1 and i < 8 and j < 8:
                         if ([i,j], self.boja) not in Figura.figpos:
+                            temp = self.pos
+                            Figura.kraljcheck = 1
+                            self.move([i, j])
                             self.posmoves.append([i, j])
                             for fig in figure:
                                 if fig.type != "kralj":
@@ -248,6 +260,8 @@ class Kralj(Figura):
                                     fig.possiblemoves()
                                     if fig.boja != self.boja and [i, j] in fig.posmoves and [i, j] in self.posmoves:
                                         self.posmoves.remove([i, j])
+                            self.move(temp)
+                            Figura.kraljcheck = 0
                                         
 
 def main(*args):
