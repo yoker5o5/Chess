@@ -284,14 +284,27 @@ class Kralj(Figura):
                             self.move([i, j])
                             self.posmoves.append([i, j])
                             for fig in figure:
-                                if fig.type != "kralj":
+                                if fig.type != "kralj" or fig.boja != self.boja:
                                     fig.posmoves = []
-                                    fig.possiblemoves()
+                                    if fig.type == "kralj":
+                                        fig.checkmoves()
+                                    else:
+                                        fig.possiblemoves()
                                     if fig.boja != self.boja and [i, j] in fig.posmoves and [i, j] in self.posmoves:
                                         self.posmoves.remove([i, j])
                             self.move(temp)
                             Figura.kraljcheck = 0
-                                        
+    def checkmoves(self):
+        x = self.pos[0]
+        y = self.pos[1]
+        xx = [x+1, x-1, x]
+        yy = [y+1, y-1, y]
+        for i in xx:
+            for j in yy:
+                if i != x or j != y:
+                    if i > -1 and j > -1 and i < 8 and j < 8:
+                        if ([i,j], self.boja) not in Figura.figpos:
+                            self.posmoves.append([i, j])
 
 def main(*args):
     global figure, players
