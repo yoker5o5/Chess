@@ -36,10 +36,7 @@ class Figura:
         self.window = tabla
         self.enemycolor = "white" if self.boja == "black" else "black"
         Figura.figpos.append((pos, boja))
-
-
-    def checkfigpos(self):
-        pass
+        self.createbutton()
 
     def createbutton(self):
         self.button = Button(self.window, text = self.type, fg=self.enemycolor, height=4, width=10, command = self.moves, bg=self.boja)
@@ -56,6 +53,11 @@ class Figura:
             Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
             Figura.B[i][j].grid(row=i, column=j)
 
+    def remove(self): 
+        self.button.destroy()
+        figure.remove(self)
+        Figura.figpos.remove((self.pos, self.boja))
+
     def move(self, x):
         # for fig in figure:
         #     if x == fig.pos:
@@ -65,20 +67,25 @@ class Figura:
         #     self.type = "kraljica"
         # if self.type == "piun" and self.boja == "black" and x[0] == 7:
         #     self.type = "kraljica"
-        self.figpos.remove((self.pos, self.boja))
+        Figura.figpos.remove((self.pos, self.boja))
         self.pos = x
-        self.figpos.append((self.pos, self.boja))
+        Figura.figpos.append((self.pos, self.boja))
         self.button.grid(row=self.pos[0], column=self.pos[1])
         for i in range(8):
             for j in range(8):
                 if type(Figura.B[i][j]) != int:
                     Figura.B[i][j].destroy()
+        for fig in figure:
+            if fig.pos == x and fig != self:
+                fig.remove()
+
+        
+        
 
 class Piun(Figura):
     def __init__(self, pos, boja, tabla):
-        super().__init__(pos, boja, tabla)
         self.type = "piun"
-        self.createbutton()
+        super().__init__(pos, boja, tabla)
 
     def possiblemoves(self):
         i = self.pos[0]
@@ -99,14 +106,14 @@ class Piun(Figura):
             #     self.posmoves.append([i, j+1])
             # if [i, j-1] in figpos:
             #     self.posmoves.append([i, j-1])
-        self.posmoves.append([i, j])
+        if i >= 0 and i < 8:
+            self.posmoves.append([i, j])
 
 class Top(Figura):
 
     def __init__(self, pos, boja, tabla):
-        super().__init__(pos, boja, tabla)
         self.type = "top"
-        self.createbutton()
+        super().__init__(pos, boja, tabla)
 
     def possiblemoves(self):
         x = self.pos[0]
@@ -143,9 +150,8 @@ class Top(Figura):
 class Lovac(Figura):
 
     def __init__(self, pos, boja, tabla):
-        super().__init__(pos, boja, tabla)
         self.type = "lovac"
-        self.createbutton()
+        super().__init__(pos, boja, tabla)
 
     def possiblemoves(self):
         i = self.pos[0]
@@ -191,24 +197,65 @@ class Lovac(Figura):
 class Kraljica(Figura):
 
     def __init__(self, pos, boja, tabla):
-        super().__init__(pos, boja, tabla)
         self.type = "kraljica"
-        self.createbutton()
+        super().__init__(pos, boja, tabla)
 
     def possiblemoves(self):
         Lovac.possiblemoves(self)
         Top.possiblemoves(self)
+class Konj(Figura):
 
+    def __init__(self, pos, boja, tabla):
+        self.type = "konj"
+        super().__init__(pos, boja, tabla)
 
+    def possiblemoves(self):
+        x = self.pos[0]
+        y = self.pos[1]
+        xx = [x+2, x-2]
+        yy = [y-1, y+1]
+        xxx = [x+1, x-1]
+        yyy = [y+2, y-2]
+        for i in xx:
+            for j in yy:
+                if i > -1 and j > -1 and i < 8 and j < 8:
+                    if ([i, j], self.boja) not in Figura.figpos:
+                        self.posmoves.append([i, j])
+        for i in xxx:
+            for j in yyy:
+                if i > -1 and j > -1 and i < 8 and j < 8:
+                    if ([i, j], self.boja) not in Figura.figpos:
+                        self.posmoves.append([i, j])
+
+class Kralj(Figura):
+    def __init__(self, pos, boja, tabla):
+        self.type = "kralj"
+        super().__init__(pos, boja, tabla)
+
+    def possiblemoves(self):
+        x = self.pos[0]
+        y = self.pos[1]
+        xx = [x+1, x-1, x]
+        yy = [y+1, y-1, y]
+        for i in xx:
+            for j in yy:
+                if i != x or j != y:
+                    if i > -1 and j > -1 and i < 8 and j < 8:
+                        if ([i,j], self.boja) not in Figura.figpos:
+                        # if self.boja == "black" and [i, j] not in whiteposmoves:
+                            self.posmoves.append([i, j])
+                        # if self.boja == "white" and [i, j] not in blackposmoves:
+                        #     self.posmoves.append([i, j])
 def main(*args):
+    global figure
     t = Tabla()
     figure = []
     for i in [0, 7]:
         figure.append(Top([0, i], "black", t.window))
         figure.append(Top([7, i], "white", t.window))
-    # for i in [1,6]:
-    #     figure.append(Figura([0, i], "konj", "black"))
-    #     figure.append(Figura([7, i], "konj", "white"))
+    for i in [1,6]:
+        figure.append(Konj([0, i], "black", t.window))
+        figure.append(Konj([7, i], "white", t.window))
     for i in [2, 5]:
         figure.append(Lovac([0, i], "black", t.window))
         figure.append(Lovac([7, i], "white", t.window))
@@ -216,7 +263,11 @@ def main(*args):
         figure.append(Piun([1, i],"black", t.window))
     for i in range(8):
         figure.append(Piun([6, i],"white", t.window))
+    figure.append(Kralj([0, 4], "black", t.window))
+    figure.append(Kraljica([0, 3], "black", t.window))
+    figure.append(Kralj([7, 4], "white", t.window))
     figure.append(Kraljica([7, 3], "white", t.window))
+
     t.prikaz()
 
 if __name__ == '__main__':
