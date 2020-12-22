@@ -33,6 +33,7 @@ class Tabla:
 
 class Figura:
     figpos = []
+    figure = []
     kraljcheck = 0
     B = [[0]*8]*8
     for i in range(8):
@@ -45,6 +46,7 @@ class Figura:
         self.enemycolor = "white" if self.boja == "black" else "black"
         Figura.figpos.append((pos, boja))
         self.createbutton()
+        Figura.figure.append(self)
 
     def createbutton(self):
         self.button = Button(self.window, text = self.type, fg=self.enemycolor, height=4, width=10, command = self.moves, bg=self.boja)
@@ -53,20 +55,22 @@ class Figura:
     def moves(self):
         for pl in players:
             if pl.napotezu == 1 and pl.color == self.boja:
-                if pl.chess and self.type == "kralj" or pl.chess == False:
-                    self.posmoves = []
-                    for i in range(8):
-                        for j in range(8):
-                            if type(Figura.B[i][j]) != int:
-                                Figura.B[i][j].destroy()
-                    self.possiblemoves()
-                    for i, j in self.posmoves:
-                        Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
-                        Figura.B[i][j].grid(row=i, column=j)
+                self.posmoves = []
+                for i in range(8):
+                    for j in range(8):
+                        if type(Figura.B[i][j]) != int:
+                            Figura.B[i][j].destroy()
+                self.possiblemoves()
+                # if pl.chess:
+                #     for fig in figure:
+                #         if fig.posmoves()
+                for i, j in self.posmoves:
+                    Figura.B[i][j] = Button(self.window, text = self.type, fg=self.boja, height=3, width=8, command = lambda x=[i, j]: self.move(x), bg="red")
+                    Figura.B[i][j].grid(row=i, column=j)
 
     def remove(self): 
         self.button.destroy()
-        figure.remove(self)
+        Figura.figure.remove(self)
         Figura.figpos.remove((self.pos, self.boja))
 
     def move(self, x):
@@ -74,10 +78,6 @@ class Figura:
         #     if x == fig.pos:
         #         fig.button.destroy()
         #         figure.remove(fig)
-        # if self.type == "piun" and self.boja == "white" and x[0] == 0:
-        #     self.type = "kraljica"
-        # if self.type == "piun" and self.boja == "black" and x[0] == 7:
-        #     self.type = "kraljica"
         Figura.figpos.remove((self.pos, self.boja))
         self.pos = x
         Figura.figpos.append((self.pos, self.boja))
@@ -86,8 +86,11 @@ class Figura:
             for j in range(8):
                 if type(Figura.B[i][j]) != int:
                     Figura.B[i][j].destroy()
+        if self.type == "piun" and self.boja == "white" and x[0] == 0 or self.type == "piun" and self.boja == "black" and x[0] == 7:
+            Kraljica(self.pos, self.boja, self.window)
+            self.remove()
         if Figura.kraljcheck == 0:
-            for fig in figure:
+            for fig in Figura.figure:
                 if fig.pos == x and fig != self:
                     fig.remove()
             for pl in players:
@@ -100,13 +103,16 @@ class Figura:
                 pl.napotezu = 0 if pl.napotezu == 1 else 1
     
     def checkchess(self):
-        for fig in figure:
+        for fig in Figura.figure:
             if fig.type == "kralj":
                 self.posmoves = []
                 self.possiblemoves()
                 if fig.pos in self.posmoves:
                     return True
         return False
+
+    def svefigure():
+        return [fig for fig in Figura.figure]
 
         
         
@@ -123,7 +129,7 @@ class Piun(Figura):
             if Figura.kraljcheck == 0:
                 if i == 1:
                     self.posmoves.append([i+2, j])
-                    for fig in figure:
+                    for fig in Figura.figure:
                         if fig.pos == [i+2, j] or fig.pos == [i+1, j]:
                             self.posmoves.remove([i+2, j])
             i += 1
@@ -135,7 +141,7 @@ class Piun(Figura):
             if Figura.kraljcheck == 0:
                 if i == 6:
                     self.posmoves.append([i-2, j])
-                    for fig in figure:
+                    for fig in Figura.figure:
                         if fig.pos == [i-2, j] or fig.pos == [i-1, j]:
                             self.posmoves.remove([i-2, j])
             i -= 1
@@ -145,7 +151,6 @@ class Piun(Figura):
                 self.posmoves.append([i, j-1])
         if i >= 0 and i < 8 and ([i,j], self.boja) not in Figura.figpos and ([i,j], self.enemycolor) not in Figura.figpos: #and Figura.kraljcheck == 0
             self.posmoves.append([i, j])
-
 class Top(Figura):
 
     def __init__(self, pos, boja, tabla):
@@ -249,21 +254,14 @@ class Konj(Figura):
     def possiblemoves(self):
         x = self.pos[0]
         y = self.pos[1]
-        xx = [x+2, x-2]
-        yy = [y-1, y+1]
-        xxx = [x+1, x-1]
-        yyy = [y+2, y-2]
-        for i in xx:
-            for j in yy:
-                if i > -1 and j > -1 and i < 8 and j < 8:
-                    if ([i, j], self.boja) not in Figura.figpos or ([i,j], self.enemycolor) in Figura.figpos:
-                        self.posmoves.append([i, j])
-        for i in xxx:
-            for j in yyy:
-                if i > -1 and j > -1 and i < 8 and j < 8:
-                    if ([i, j], self.boja) not in Figura.figpos or ([i,j], self.enemycolor) in Figura.figpos:
-                        self.posmoves.append([i, j])
-
+        xx = [[x+2, x-2], [x+1, x-1]]
+        yy = [[y-1, y+1], [y+2, y-2]]
+        for g, _ in enumerate(xx):
+            for i in xx[g]:
+                for j in yy[g]:
+                    if i > -1 and j > -1 and i < 8 and j < 8:
+                        if ([i, j], self.boja) not in Figura.figpos or ([i,j], self.enemycolor) in Figura.figpos:
+                            self.posmoves.append([i, j])
 class Kralj(Figura):
     def __init__(self, pos, boja, tabla):
         self.type = "kralj"
@@ -283,7 +281,7 @@ class Kralj(Figura):
                             Figura.kraljcheck = 1
                             self.move([i, j])
                             self.posmoves.append([i, j])
-                            for fig in figure:
+                            for fig in Figura.figure:
                                 if fig.type != "kralj" or fig.boja != self.boja:
                                     fig.posmoves = []
                                     if fig.type == "kralj":
@@ -312,27 +310,24 @@ def main(*args):
     players = []
     players.append(Player("Djordje", "white"))
     players.append(Player("Boris", "black"))
-    figure = []
     for i in [0, 7]:
-        figure.append(Top([0, i], "black", t.window))
-        figure.append(Top([7, i], "white", t.window))
+        Top([0, i], "black", t.window)
+        Top([7, i], "white", t.window)
     for i in [1,6]:
-        figure.append(Konj([0, i], "black", t.window))
-        figure.append(Konj([7, i], "white", t.window))
+        Konj([0, i], "black", t.window)
+        Konj([7, i], "white", t.window)
     for i in [2, 5]:
-        figure.append(Lovac([0, i], "black", t.window))
-        figure.append(Lovac([7, i], "white", t.window))
+        Lovac([0, i], "black", t.window)
+        Lovac([7, i], "white", t.window)
     for i in range(8):
-        figure.append(Piun([1, i],"black", t.window))
+        Piun([1, i],"black", t.window)
     for i in range(8):
-        figure.append(Piun([6, i],"white", t.window))
-    figure.append(Kralj([0, 4], "black", t.window))
-    figure.append(Kraljica([0, 3], "black", t.window))
-    figure.append(Kralj([7, 4], "white", t.window))
-    figure.append(Kraljica([7, 3], "white", t.window))
-
+        Piun([6, i],"white", t.window)
+    Kralj([0, 4], "black", t.window)
+    Kraljica([0, 3], "black", t.window)
+    Kralj([7, 4], "white", t.window)
+    Kraljica([7, 3], "white", t.window)
     t.prikaz()
-
 if __name__ == '__main__':
     _, *script_args = sys.argv
     main(*script_args)
