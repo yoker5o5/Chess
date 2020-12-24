@@ -12,7 +12,8 @@ class Player:
 class Tabla:
     def __init__(self, pro, pos, players, boja):
         self.players = players
-        self.glavni = Frame(pro)#,bg=boja)
+        self.boja = boja
+        self.glavni = Frame(pro,bg=self.boja)
         self.glavni.grid(row = pos[0], column = pos[1])
         self.window = [0]*3
         for i,_ in enumerate(self.window):
@@ -37,11 +38,11 @@ class Tabla:
                 self.label.grid(row= i, column=j)
         for j in [0, 2]:
             for i in range(8, 0, -1):
-                self.label = Label(self.window[j], text = str(i),height=6, width=6)
+                self.label = Label(self.window[j], text = str(i),height=6, width=6, bg=self.boja)
                 self.label.grid(row=abs(i-8),column=0)
         for j in [0, 2]:
             for i,slovo in enumerate(["A", "B", "C", "D", "E", "F", "G", "H"]):
-                self.label = Label(self.win[j], text = slovo,height=2, width=14)
+                self.label = Label(self.win[j], text = slovo,height=2, width=14, bg=self.boja)
                 self.label.grid(row=j,column=i)
         for i in [0, 7]:
             self.figure.append(Top(self, [0, i], "black"))
@@ -339,7 +340,7 @@ def main(*args):
     players = []
     players.append(Player("Djordje", "white"))
     players.append(Player("Boris", "black"))
-    tabla = Tabla(root, (0, 0), players, "")
+    tabla = Tabla(root, (0, 0), players, "blue")
     players2 = []
     players2.append(Player("Djordje", "white"))
     players2.append(Player("Boris", "black"))
