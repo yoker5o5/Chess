@@ -12,7 +12,7 @@ class Player:
 class Tabla:
     def __init__(self, pro, pos, players, boja):
         self.players = players
-        self.glavni = Frame(pro,bg=boja)
+        self.glavni = Frame(pro)#,bg=boja)
         self.glavni.grid(row = pos[0], column = pos[1])
         self.window = [0]*3
         for i,_ in enumerate(self.window):
@@ -111,7 +111,7 @@ class Figura:
             t.destroy()
             #self.temp.remove(t)
         if self.type == "piun" and self.boja == "white" and x[0] == 0 or self.type == "piun" and self.boja == "black" and x[0] == 7:
-            Kraljica(self.pos, self.boja, self.window)
+            Kraljica(self.tabla, self.pos, self.boja)
             self.remove()
         if Figura.kraljcheck == 0:
             for fig in self.tabla.figure:
